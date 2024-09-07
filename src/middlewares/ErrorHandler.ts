@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-
+import { ValidationError as SequelizeValidationError } from "sequelize";
 export const errorHandler = (
   err: any,
   req: Request,
@@ -17,6 +17,14 @@ export const errorHandler = (
       error: "Validation",
       message: humanReadableErrors,
       // data: err,
+    });
+  }
+  if (err instanceof SequelizeValidationError) {
+    return res.status(400).json({
+      success: false,
+      statusCode: 400,
+      error: err.name,
+      message: err.errors.map((e: any) => e.message),
     });
   }
   res.status(500).json({

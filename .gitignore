@@ -1,2 +1,8 @@
 node_modules/
+dist/*
+
+
+# TypeScript output
 dist/
+build/
+*.tsbuildinfo
