@@ -6,6 +6,16 @@ export class UserService {
     return await User.findAll();
   }
 
+  public async getUserByID(_id: number | string) {
+    return await User.findByPk(_id);
+  }
+
+  public async getUserByEmail(_email: string) {
+    return await User.findOne({
+      where: { email: _email },
+    });
+  }
+
   public async createUser(userData: {
     name: string;
     email: string;

@@ -13,7 +13,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(helmet()); // Security headers
 app.use(compression()); // GZIP compression
-app.use(morgan("dev")); // Logging
+// app.use(morgan("dev")); // Logging
 app.use(cors()); // Cross-Origin Resource Sharing
 
 // Routes

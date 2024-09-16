@@ -1,5 +1,5 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-
+import bcrypt from "bcryptjs";
 interface UserAttributes {
   id?: number;
   name: string;
@@ -12,9 +12,13 @@ export class User extends Model<UserAttributes> implements UserAttributes {
   public name!: string;
   public email!: string;
   public password!: string;
+
+  async comparePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }
 
-export const UserModel = (sequelize: Sequelize) => {
+export const UserModel = (sequelize: Sequelize): typeof User => {
   User.init(
     {
       id: {
@@ -54,8 +58,10 @@ export const UserModel = (sequelize: Sequelize) => {
     },
     {
       sequelize,
-      tableName: "users",
+      tableName: "Users",
       schema: "public",
     }
   );
+
+  return User;
 };

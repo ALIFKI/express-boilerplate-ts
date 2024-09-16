@@ -1,8 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = exports.User = void 0;
+const tslib_1 = require("tslib");
 const sequelize_1 = require("sequelize");
+const bcryptjs_1 = tslib_1.__importDefault(require("bcryptjs"));
 class User extends sequelize_1.Model {
+    comparePassword(password) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return bcryptjs_1.default.compare(password, this.password);
+        });
+    }
 }
 exports.User = User;
 const UserModel = (sequelize) => {
@@ -43,8 +50,9 @@ const UserModel = (sequelize) => {
         },
     }, {
         sequelize,
-        tableName: "users",
+        tableName: "Users",
         schema: "public",
     });
+    return User;
 };
 exports.UserModel = UserModel;

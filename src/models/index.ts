@@ -1,6 +1,9 @@
 import { Sequelize } from "sequelize";
 import config from "../config/config";
 import { UserModel } from "./user";
+import { ChatModel } from "./chat";
+import { MessageModel } from "./messages";
+import { MemberModel } from "./member";
 
 const sequelize = new Sequelize(
   config.dbConfig.database as string,
@@ -21,9 +24,15 @@ const sequelize = new Sequelize(
 
 // Initialize models
 const User = UserModel(sequelize);
+const Chat = ChatModel(sequelize);
+const Messages = MessageModel(sequelize);
+const Member = MemberModel(sequelize);
 
 const db = {
+  Member,
   User,
+  Chat,
+  Messages,
   sequelize,
   Sequelize,
 };

@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "expressdb_owner",
+    "password": "iYNrQec31sWd",
+    "database": "expressdb",
+    "host": "ep-wandering-silence-a1fnzdkb.ap-southeast-1.aws.neon.tech",
+    "dialect": "postgres",
+    "port": "5434"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
