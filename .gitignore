@@ -1,8 +1,8 @@
 node_modules/
 dist/*
-
+.env
 
 # TypeScript output
 dist/
 build/
-*.tsbuildinfo
+*.tsbuildinfo.env
