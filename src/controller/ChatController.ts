@@ -3,14 +3,11 @@ import Chat from "@/models/chat";
 import Member from "@/models/member";
 import Message from "@/models/messages";
 import { User } from "@/models/user";
+import { io } from "@/server";
 import { userService } from "@/services";
 import { createChatValidator } from "@/validators/ChatValidator";
-import { createUserSchema, loginSchema } from "@/validators/userValidator";
 import { Request, Response, NextFunction } from "express";
-import { validationResult } from "express-validator";
-const { validate, ValidationError, Joi } = require("express-validation");
 import jwt, { JwtPayload } from "jsonwebtoken";
-import moment from "moment";
 
 export class _ChatController {
   public async createChat(req: Request, res: Response, next: NextFunction) {
@@ -120,7 +117,7 @@ export class _ChatController {
     const token = req.headers.authorization;
     const decoded = jwt.verify(token as string, config.jwtSecret) as JwtPayload;
     const userId = decoded.userId;
-    const { chatId, message, type } = req.body;
+    const { chatId, content, type } = req.body;
 
     try {
       // Find the chat instance
@@ -148,11 +145,13 @@ export class _ChatController {
       const messageInstance = await Message.create({
         chat_id: chatId,
         sender_id: userId,
-        content: message,
+        content: content,
         message_type: type,
         send_at: new Date(),
         is_read: false,
       });
+
+      io.emit("newMessage", messageInstance);
 
       // Return the created message instance
       return res.status(201).json({
@@ -164,7 +163,60 @@ export class _ChatController {
       next(err);
     }
   }
-}
+  public async getMessagesByChatId(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const token = req.headers.authorization;
+    const decoded = jwt.verify(token as string, config.jwtSecret) as JwtPayload;
+    const userId = decoded.userId;
+    const { chatId } = req.params;
 
-const ChatController = new _ChatController();
-export default ChatController;
+    try {
+      // Find the chat instance
+      const chat = await Chat.findByPk(chatId, {
+        include: [
+          {
+            model: Member,
+            as: "Members",
+            where: {
+              user_id: userId,
+            },
+          },
+        ],
+      });
+
+      if (!chat) {
+        return res.status(404).json({
+          success: false,
+          statusCode: 404,
+          message: "Chat not found",
+        });
+      }
+
+      // Find all messages for the given chat
+      const messages = await Message.findAll({
+        where: {
+          chat_id: chatId,
+        },
+        include: [
+          {
+            model: User,
+            as: "User",
+          },
+        ],
+        order: [["send_at", "ASC"]],
+      });
+
+      // Return the messages
+      return res.status(200).json({
+        success: true,
+        statusCode: 200,
+        data: messages,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+}

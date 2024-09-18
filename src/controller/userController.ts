@@ -30,12 +30,12 @@ export class UserController {
       });
       res.status(200).json({
         success: true,
-        token,
-        type: "Bearer",
         data: {
           id: user.id,
           name: user.name,
           email: user.email,
+          token,
+          type: "Bearer",
         },
       });
     } catch (error: any) {

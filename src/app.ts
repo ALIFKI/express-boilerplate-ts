@@ -6,6 +6,8 @@ import compression from "compression";
 import cors from "cors";
 import router from "./routes";
 import { errorHandler } from "./middlewares/ErrorHandler";
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
 
 const app: Application = express();
 
